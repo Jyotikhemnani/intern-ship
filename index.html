@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Movie Review and Rating Platform</title>
+<style>
+:root{--bg:#f6f6f9;--surface:#fff;--text:#15151c;--muted:#6a6a78;--line:#e6e6ee;--accent:#f5b50a;--good:#2fa866;--bad:#e5484d;--ph:#e3e3ea;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0e13;--surface:#17171f;--text:#f2f2f6;--muted:#9a9aa8;--line:#2a2a35;--ph:#262631;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e0e13;--surface:#17171f;--text:#f2f2f6;--muted:#9a9aa8;--line:#2a2a35;--ph:#262631;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom,0px)}
+button{font:inherit;cursor:pointer;border:0;color:inherit;background:none}
+img{display:block;width:100%;height:100%;object-fit:cover}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:14px;height:58px}
+.logo{font-weight:800;font-size:15px;cursor:pointer;white-space:nowrap}.logo b{color:var(--accent)}
+.search{flex:1;min-width:0;max-width:360px;height:38px;border-radius:10px;background:var(--bg);border:1px solid var(--line);padding:0 14px;color:var(--text);font:inherit}
+.links{display:flex;gap:2px;margin-left:auto}
+.links button{padding:8px 11px;border-radius:8px;color:var(--muted);font-weight:500;font-size:14px}
+.links button.on{color:var(--text);background:var(--bg)}
+.btn{background:var(--accent);color:#1a1400;border-radius:10px;padding:10px 18px;font-weight:700}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--text);font-weight:600}
+.btn.block{width:100%}
+.page{display:none;padding:24px 0 90px}.page.on{display:block}
+h1{font-size:clamp(24px,5vw,32px);letter-spacing:-.8px}h2{font-size:19px;letter-spacing:-.3px;margin:30px 0 12px}
+.muted{color:var(--muted)}
+.hero{height:clamp(190px,34vw,300px);border-radius:18px;position:relative;overflow:hidden;background:var(--ph)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.75))}
+.hero .txt{position:absolute;left:22px;bottom:20px;z-index:1;color:#fff}
+.hero .muted{color:#ddd}
+.row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.card{cursor:pointer}.poster{aspect-ratio:2/3;border-radius:12px;overflow:hidden;background:var(--ph);margin-bottom:8px;transition:transform .15s}.card:hover .poster{transform:translateY(-3px)}
+.card h3{font-size:15px;line-height:1.3}
+.scores{display:flex;gap:10px;font-size:13px;font-weight:600;margin-top:2px;flex-wrap:wrap}
+.fresh{color:var(--good)}.rotten{color:var(--bad)}.star{color:var(--accent)}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:14px 0;padding-bottom:4px}
+.chip{flex:none;padding:7px 14px;border-radius:99px;border:1px solid var(--line);background:var(--surface);font-size:13px}
+.chip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.detail{display:grid;grid-template-columns:250px 1fr;gap:30px}
+@media(max-width:720px){.detail{grid-template-columns:1fr}.detail .poster{max-width:220px}.links{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));justify-content:space-around;margin:0;z-index:30}.links button{font-size:12px;padding:8px 6px}.logo{font-size:13px}}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.tag{background:var(--ph);border-radius:6px;padding:3px 10px;font-size:12px}
+.meters{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+.meter{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 18px;flex:1;min-width:120px}
+.meter big{display:block;font-size:28px;font-weight:800;letter-spacing:-1px}
+.cast{display:flex;gap:16px;overflow-x:auto}.cast div{text-align:center;font-size:12px;flex:none}.cast .av{width:64px;height:64px;border-radius:50%;margin-bottom:6px;overflow:hidden}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tabs button{padding:10px 16px;color:var(--muted);font-weight:600;border-bottom:2px solid transparent;white-space:nowrap}
+.tabs button.on{color:var(--text);border-color:var(--accent)}
+.card2{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.who{display:flex;gap:10px;align-items:center;margin-bottom:6px}.who .av{width:36px;height:36px;border-radius:50%;overflow:hidden;flex:none}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.li{display:flex;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer}.li:last-child{border:0}
+.li .n{width:22px;font-weight:800;color:var(--muted)}.li .poster{width:44px;margin:0;flex:none}.li .grow{flex:1;min-width:0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;max-width:560px;margin:0 auto}
+.field{width:100%;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:10px 12px;font:inherit;margin:6px 0}
+textarea.field{min-height:110px;resize:vertical}
+.stars{display:flex;gap:2px;font-size:24px;color:var(--line);margin:8px 0;flex-wrap:wrap}.stars span{cursor:pointer}.stars .on{color:var(--accent)}
+.dates{display:flex;gap:8px;overflow-x:auto;margin:14px 0}
+.date{flex:none;width:56px;padding:8px 0;text-align:center;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+.date.on{background:var(--accent);color:#1a1400;border-color:var(--accent)}
+.theatre{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;display:flex;gap:14px;justify-content:space-between;flex-wrap:wrap}
+.times{display:flex;gap:8px;flex-wrap:wrap}
+.time{border:1px solid var(--good);color:var(--good);border-radius:8px;padding:7px 13px;font-size:13px;font-weight:600}
+.time:hover{background:var(--good);color:#fff}
+.screen{height:6px;border-radius:99px;background:var(--line);max-width:420px;margin:20px auto 6px}
+.seats{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;max-width:420px;margin:16px auto}
+.seat{aspect-ratio:1;border-radius:6px;border:1px solid var(--line);background:var(--surface);font-size:10px;color:var(--muted)}
+.seat.taken{background:var(--line);border-color:transparent;cursor:not-allowed;color:transparent}
+.seat.sel{background:var(--accent);border-color:var(--accent);color:#1a1400}
+.line{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+.ticket{border:2px dashed var(--line);border-radius:16px;padding:22px;text-align:center}
+.qr{width:120px;height:120px;margin:12px auto;border-radius:10px;background:repeating-conic-gradient(var(--text) 0 25%,var(--bg) 0 50%) 0 0/20px 20px}
+.profile{display:flex;gap:16px;align-items:center;margin-bottom:12px}.profile .av{width:76px;height:76px;border-radius:50%;overflow:hidden;flex:none}
+footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+<div class="logo" onclick="go('home')">Movie <b>Review &amp; Rating</b> Platform</div>
+<input class="search" id="q" placeholder="Search movies…" aria-label="Search">
+<nav class="links">
+<button data-p="home" class="on" onclick="go('home')">Home</button>
+<button data-p="browse" onclick="go('browse')">Movies</button>
+<button data-p="top" onclick="go('top')">Top</button>
+<button data-p="bookings" onclick="go('bookings')">Bookings</button>
+<button data-p="profile" onclick="go('profile')">Profile</button>
+</nav>
+</div></header>
+
+<main class="wrap">
+<section class="page on" id="home">
+<div class="hero" id="hero"></div>
+<h2>Now showing</h2><div class="row" id="r1"></div>
+<h2>Top rated</h2><div class="list" id="l1"></div>
+</section>
+
+<section class="page" id="browse">
+<h1>Movies</h1>
+<div class="chips" id="genres"></div>
+<div class="row" id="r2"></div>
+</section>
+
+<section class="page" id="top">
+<h1>Top rated</h1><p class="muted">Ranked by combined critic and audience score</p><br>
+<div class="list" id="l2"></div>
+</section>
+
+<section class="page" id="detail">
+<div class="detail">
+<div><div class="poster" id="dposter"></div></div>
+<div>
+<h1 id="dtitle"></h1>
+<div class="meta" id="dmeta"></div>
+<div class="meters" id="dmeters"></div>
+<button class="btn" onclick="go('shows')">🎟 Book tickets</button> <button class="btn ghost" onclick="go('write')">★ Rate &amp; review</button>
+<h2>Synopsis</h2>
+<p class="muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+<h2>Cast &amp; crew</h2><div class="cast" id="cast"></div>
+<h2>Reviews</h2>
+<div class="tabs"><button class="on" data-tab="critics">Critics</button><button data-tab="audience">Audience</button></div>
+<div id="reviews"></div>
+</div></div>
+</section>
+
+<section class="page" id="write">
+<div class="box"><h1 style="font-size:24px">Rate &amp; review</h1><p class="muted" id="wtitle"></p><br>
+<b>Your rating</b><div class="stars" id="stars"></div>
+<input class="field" id="rhead" placeholder="Review headline">
+<textarea class="field" id="rbody" placeholder="Write your review…"></textarea><br><br>
+<button class="btn block" onclick="submitReview()">Submit review</button></div>
+</section>
+
+<section class="page" id="shows">
+<h1 id="stitle"></h1><p class="muted">Select date, cinema and showtime</p>
+<div class="dates" id="dates"></div>
+<div class="theatre"><div><b>Cinema Name One</b><p class="muted">Address placeholder, City</p></div><div class="times"><button class="time">10:30 AM</button><button class="time">01:45 PM</button><button class="time">06:15 PM</button><button class="time">09:30 PM</button></div></div>
+<div class="theatre"><div><b>Cinema Name Two</b><p class="muted">Address placeholder, City</p></div><div class="times"><button class="time">11:00 AM</button><button class="time">03:00 PM</button><button class="time">08:00 PM</button></div></div>
+<div class="theatre"><div><b>Cinema Name Three</b><p class="muted">Address placeholder, City</p></div><div class="times"><button class="time">12:15 PM</button><button class="time">07:30 PM</button></div></div>
+</section>
+
+<section class="page" id="seats">
+<h1>Select seats</h1><p class="muted" id="seatinfo"></p>
+<div class="screen"></div><p class="muted" style="text-align:center;font-size:12px">Screen this way</p>
+<div class="seats" id="seatgrid"></div>
+<p class="muted" style="text-align:center;font-size:12px">▢ Available · <span style="color:var(--accent)">■</span> Selected · ■ Sold</p>
+<div class="box" style="margin-top:20px"><div class="line"><span id="seatlist">No seats selected</span><b id="seattotal">₹0</b></div><br><button class="btn block" onclick="checkout()">Proceed to pay</button></div>
+</section>
+
+<section class="page" id="checkout">
+<div class="box"><h1 style="font-size:24px">Checkout</h1><br>
+<div class="line"><span class="muted">Movie</span><span id="cm"></span></div>
+<div class="line"><span class="muted">Show</span><span id="cs"></span></div>
+<div class="line"><span class="muted">Seats</span><span id="cseats"></span></div>
+<div class="line"><b>Total</b><b id="ctotal"></b></div><br>
+<input class="field" placeholder="Name"><input class="field" placeholder="Email"><input class="field" placeholder="Phone"><br><br>
+<button class="btn block" onclick="pay()">Pay now</button></div>
+</section>
+
+<section class="page" id="confirm">
+<div class="box"><div class="ticket"><h1 style="font-size:24px">Booking confirmed ✓</h1><p class="muted" id="bid"></p>
+<div class="qr"></div><b id="tm"></b><p class="muted" id="ts"></p><p class="muted" id="tseats"></p></div><br>
+<button class="btn block" onclick="go('home')">Back to home</button></div>
+</section>
+
+<section class="page" id="bookings">
+<h1>My bookings</h1><br><div id="blist"></div>
+</section>
+
+<section class="page" id="profile">
+<div class="profile"><div class="av" id="pav"></div><div><h1 style="font-size:24px">Username</h1><p class="muted">Member since 2026</p></div></div>
+<h2>My reviews</h2><div id="myrev"><p class="muted">No reviews yet. Open a movie and tap Rate &amp; review.</p></div>
+</section>
+</main>
+<footer>© 2026 Movie Review and Rating Platform · About · Help · Terms · Privacy</footer>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+/* ---- IMAGES: generated artwork (data URIs). To use real stock photos, set "img" on a movie to a URL,
+   e.g. {t:"Title", ..., img:"https://..."} and host this file on your own site. ---- */
+function art(h,w,hh,label,round){
+  const s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${hh}"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},65%,42%)"/><stop offset="1" stop-color="hsl(${(h+50)%360},70%,14%)"/></linearGradient></defs><rect width="${w}" height="${hh}" fill="url(#g)"/><circle cx="${w*.78}" cy="${hh*.28}" r="${hh*.16}" fill="hsl(${(h+30)%360},90%,70%)" opacity=".85"/><path d="M0 ${hh*.8} Q${w*.3} ${hh*.55} ${w*.55} ${hh*.75} T${w} ${hh*.62} V${hh} H0Z" fill="rgba(0,0,0,.4)"/><path d="M0 ${hh*.9} Q${w*.4} ${hh*.7} ${w} ${hh*.88} V${hh} H0Z" fill="rgba(0,0,0,.45)"/>${label?`<text x="${w/2}" y="${hh*.5}" fill="#fff" font-family="Georgia,serif" font-weight="700" font-size="${w*.1}" text-anchor="middle" opacity=".92">${label}</text>`:''}</svg>`;
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent(s);
+}
+const M=[["Midnight Harbor","Thriller",2026,"2h 04m",94,90],["Solar Winds","Sci-Fi",2026,"2h 28m",91,93],["The Last Orchard","Drama",2025,"1h 52m",89,84],["Laugh Track","Comedy",2026,"1h 38m",78,86],["Iron Meridian","Action",2026,"2h 11m",72,88],["Hollow Pines","Horror",2025,"1h 47m",85,71],["Paper Lanterns","Drama",2026,"2h 02m",96,89],["Neon District","Sci-Fi",2025,"2h 15m",67,80],["Desert Kings","Action",2026,"2h 19m",58,76],["Small Mercies","Comedy",2025,"1h 33m",82,91],["Echo Valley","Thriller",2026,"1h 58m",88,82],["Blue Horizon","Drama",2026,"2h 07m",93,87]]
+.map((m,i)=>({id:i,t:m[0],g:m[1],y:m[2],rt:m[3],c:m[4],a:m[5],r:+((m[4]+m[5])/20).toFixed(1),h:(i*37+10)%360}));
+const poster=m=>`<img alt="${m.t} poster" loading="lazy" src="${m.img||art(m.h,300,450,m.t)}">`;
+const cls=v=>v>=60?'fresh':'rotten';
+const sc=m=>`<span class="${cls(m.c)}">🍅 ${m.c}%</span><span><span class="star">★</span> ${m.r}</span>`;
+const card=m=>`<div class="card" onclick="open_(${m.id})"><div class="poster">${poster(m)}</div><h3>${m.t}</h3><div class="scores">${sc(m)}</div></div>`;
+const li=(m,i)=>`<div class="li" onclick="open_(${m.id})"><span class="n">${i+1}</span><div class="poster">${poster(m)}</div><div class="grow"><b>${m.t}</b><p class="muted">${m.g} · ${m.y}</p></div><div class="scores">${sc(m)}</div></div>`;
+const byScore=[...M].sort((a,b)=>(b.c+b.a)-(a.c+a.a));
+const state={cur:M[0],genre:'All',q:'',sel:new Set(),show:'',bookings:[],myrev:[],extra:{},rating:0};
+function go(id){
+  $$('.page').forEach(p=>p.classList.toggle('on',p.id===id));
+  $$('.links button').forEach(b=>b.classList.toggle('on',b.dataset.p===id));
+  if(id==='bookings')renderBookings();if(id==='profile')renderProfile();
+  scrollTo(0,0);
+}
+function renderBrowse(){
+  const r=M.filter(m=>(state.genre==='All'||m.g===state.genre)&&m.t.toLowerCase().includes(state.q));
+  $('#r2').innerHTML=r.length?r.map(card).join(''):'<p class="muted">No movies found.</p>';
+}
+$('#hero').innerHTML=`<img alt="" src="${art(210,1200,400)}"><div class="txt"><h1>${M[1].t}</h1><p class="muted">Critics ${M[1].c}% · Audience ${M[1].a}%</p><br><button class="btn" onclick="open_(1)">Book / Review</button></div>`;
+$('#r1').innerHTML=M.slice(0,6).map(card).join('');
+$('#l1').innerHTML=byScore.slice(0,5).map(li).join('');
+$('#l2').innerHTML=byScore.map(li).join('');
+$('#genres').innerHTML=['All',...new Set(M.map(m=>m.g))].map((g,i)=>`<button class="chip${i?'':' on'}">${g}</button>`).join('');
+$$('#genres .chip').forEach(c=>c.onclick=()=>{$$('#genres .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');state.genre=c.textContent;renderBrowse()});
+$('#q').oninput=e=>{state.q=e.target.value.toLowerCase();renderBrowse();go('browse')};
+renderBrowse();
+/* ---- detail ---- */
+const names=['Alex Morgan','Sam Rivera','Jamie Chen','Riley Patel','Casey Kim','Jordan Lee','Taylor Brooks'];
+const rev=(n,t,m)=>Array.from({length:n},(_,i)=>`<div class="card2"><div class="who"><div class="av"><img alt="" src="${art((m.h+i*40)%360,80,80)}"></div><div><b>${names[(i+m.id)%7]}</b><div class="muted" style="font-size:12px">${t==='Critic'?'Publication Name':'Verified viewer'} · Date</div></div><span class="star" style="margin-left:auto">${'★'.repeat(5-(i%2))}${'☆'.repeat(i%2)}</span></div><p class="muted">Review text placeholder. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p></div>`).join('');
+function showTab(k){
+  const m=state.cur,mine=(state.extra[m.id]||[]).join('');
+  $('#reviews').innerHTML=k==='critics'?rev(3,'Critic',m):mine+rev(3,'User',m);
+  $$('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===k));
+}
+$$('[data-tab]').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+function open_(i){
+  const m=state.cur=M[i];
+  $('#dposter').innerHTML=poster(m);
+  $('#dtitle').innerHTML=`${m.t} <span class="muted" style="font-weight:400">(${m.y})</span>`;
+  $('#dmeta').innerHTML=`<span class="tag">UA</span><span class="tag">${m.rt}</span><span class="tag">${m.g}</span><span class="tag">English / Hindi</span>`;
+  $('#dmeters').innerHTML=`<div class="meter"><span class="muted">Critics</span><big class="${cls(m.c)}">${m.c}%</big></div><div class="meter"><span class="muted">Audience</span><big class="${cls(m.a)}">${m.a}%</big></div><div class="meter"><span class="muted">User rating</span><big><span class="star">★</span> ${m.r}</big></div>`;
+  $('#cast').innerHTML=names.map((n,k)=>`<div><div class="av"><img alt="" src="${art((m.h+k*30)%360,80,80)}"></div>${n}</div>`).join('');
+  $('#wtitle').textContent=`${m.t} (${m.y})`;$('#stitle').textContent=m.t;
+  state.sel.clear();showTab('critics');go('detail');
+}
+/* ---- rating ---- */
+const st=$('#stars');st.innerHTML=Array.from({length:10},(_,i)=>`<span data-n="${i+1}">★</span>`).join('');
+$$('span',st).forEach(s=>s.onclick=()=>{state.rating=+s.dataset.n;$$('span',st).forEach(x=>x.classList.toggle('on',+x.dataset.n<=state.rating))});
+function submitReview(){
+  const m=state.cur,h=$('#rhead').value||'My review',b=$('#rbody').value||'No text.',r=state.rating||5;
+  const html=`<div class="card2"><div class="who"><div class="av"><img alt="" src="${art(40,80,80)}"></div><div><b>You</b><div class="muted" style="font-size:12px">Just now</div></div><span class="star" style="margin-left:auto">★ ${r}/10</span></div><b>${h}</b><p class="muted">${b}</p></div>`;
+  (state.extra[m.id]=state.extra[m.id]||[]).unshift(html);
+  state.myrev.unshift(`<div class="card2"><b>${m.t}</b> <span class="star">★ ${r}/10</span><p class="muted"><b>${h}</b> — ${b}</p></div>`);
+  $('#rhead').value=$('#rbody').value='';state.rating=0;$$('span',st).forEach(x=>x.classList.remove('on'));
+  showTab('audience');go('detail');
+}
+/* ---- booking ---- */
+const days=['Today','Sat','Sun','Mon','Tue','Wed','Thu'];
+$('#dates').innerHTML=days.map((d,i)=>`<button class="date${i?'':' on'}"><div style="font-size:11px">${d}</div><b>${17+i}</b></button>`).join('');
+$$('.date').forEach(d=>d.onclick=()=>{$$('.date').forEach(x=>x.classList.remove('on'));d.classList.add('on')});
+$$('.time').forEach(t=>t.onclick=()=>{
+  state.show=`${$('.date.on b').textContent} Oct · ${t.textContent} · ${t.closest('.theatre').querySelector('b').textContent}`;
+  $('#seatinfo').textContent=`${state.cur.t} · ${state.show}`;state.sel.clear();drawSeats();go('seats');
+});
+const taken=new Set([3,4,12,13,14,25,26,41,55,56,57,58]);
+function drawSeats(){
+  $('#seatgrid').innerHTML='';
+  for(let i=0;i<60;i++){
+    const b=document.createElement('button'),n='ABCDEF'[Math.floor(i/10)]+(i%10+1);
+    b.className='seat'+(taken.has(i)?' taken':'');b.textContent=n;
+    b.onclick=()=>{if(taken.has(i))return;state.sel.has(n)?state.sel.delete(n):state.sel.add(n);b.classList.toggle('sel');sumSeats()};
+    $('#seatgrid').append(b);
+  }
+  sumSeats();
+}
+function sumSeats(){$('#seatlist').textContent=[...state.sel].join(', ')||'No seats selected';$('#seattotal').textContent='₹'+state.sel.size*250}
+function checkout(){
+  if(!state.sel.size){alert('Please select at least one seat.');return}
+  $('#cm').textContent=state.cur.t;$('#cs').textContent=state.show;$('#cseats').textContent=[...state.sel].join(', ');$('#ctotal').textContent='₹'+state.sel.size*250;go('checkout');
+}
+function pay(){
+  const b={id:'BK'+Math.floor(100000+Math.random()*900000),m:state.cur,show:state.show,seats:[...state.sel].join(', ')};
+  state.bookings.unshift(b);
+  $('#bid').textContent='Booking ID: '+b.id;$('#tm').textContent=b.m.t;$('#ts').textContent=b.show;$('#tseats').textContent='Seats: '+b.seats;
+  state.sel.clear();go('confirm');
+}
+function renderBookings(){
+  $('#blist').innerHTML=state.bookings.length?state.bookings.map(b=>`<div class="theatre"><div style="display:flex;gap:14px"><div class="poster" style="width:60px;margin:0">${poster(b.m)}</div><div><b>${b.m.t}</b><p class="muted">${b.show}</p><p class="muted">Seats: ${b.seats} · ${b.id}</p></div></div><span class="tag" style="align-self:center">Confirmed</span></div>`).join(''):'<p class="muted">No bookings yet. Pick a movie and book your first show.</p>';
+}
+function renderProfile(){
+  $('#pav').innerHTML=`<img alt="" src="${art(40,80,80)}">`;
+  if(state.myrev.length)$('#myrev').innerHTML=state.myrev.join('');
+}
+</script>
+</body>
+</html>
